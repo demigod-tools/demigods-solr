@@ -1,4 +1,4 @@
-FROM solr:8.8
+FROM solr:8
 
 USER root
 
@@ -6,7 +6,6 @@ USER root
 ENV SOLR_HOST solr
 ENV SOLR_PORT 8983
 ENV SOLR_PATH /
-ENV SOLR_CORE ${PANTHEON_SITE_NAME}
 
 LABEL org.label-schema.vendor="pantheon" \
   org.label-schema.name=$REPO_NAME \
@@ -29,18 +28,9 @@ RUN apt-get update && \
         zip \
         sudo
 
-RUN set -ex
-RUN mkdir -p /opt/solr/server/solr/mycores/milken/data
-RUN chmod -R 777 /opt/solr/server/solr/mycores/milken
-RUN mkdir -p /opt/solr/server/solr/configsets/_default/conf
-
-COPY ./8.x/* /opt/solr/server/solr/configsets/_default/conf/
 COPY init_solr /docker-entrypoint-initdb.d/
 COPY actions.mk /usr/local/bin/actions.mk
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN echo "export PATH=/usr/local/openjdk-11:$PATH" >> /opt/solr/.bashrc
-RUN echo "export PATH=/usr/local/openjdk-11:$PATH" >> /root/.bashrc
 
 EXPOSE 8983
 WORKDIR /opt/solr
