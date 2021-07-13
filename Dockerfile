@@ -18,21 +18,36 @@ LABEL org.label-schema.vendor="pantheon" \
   org.label-schema.docker.cmd="docker run --rm -v \$PWD:/work $REPO_NAME --parser=markdown --write '**/*.md'" \
   org.label-schema.schema-version="1.0"
 
+WORKDIR /opt/solr
+
 RUN apt-get update && \
   apt-get install -y --fix-missing make \
         supervisor \
         curl \
+        git \
         vim \
         procps \
         apt-utils \
         zip \
         sudo
 
-COPY init_solr /docker-entrypoint-initdb.d/
-COPY actions.mk /usr/local/bin/actions.mk
+RUN mkdir -p /opt/solr
+COPY demigods /opt/demigods
+RUN chmod +x /opt/demigods/*
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN mkdir -p /var/solr/data/configsets/drupal/conf
+RUN git clone https://git.drupalcode.org/project/search_api_solr.git \
+  && cd search_api_solr \
+  && git checkout 4.x \
+  && cp jump-start/solr8/config-set/* /var/solr/data/configsets/drupal \
+  && cp solr-conf-templates/8.x/* /var/solr/data/configsets/drupal/conf
+COPY solrcore.properties /var/solr/data/configsets/drupal/conf
+RUN echo "export PATH=/usr/local/openjdk-11:$PATH" >> /opt/solr/.bashrc
+RUN chown solr:solr /opt/solr/.bashrc
+RUN chmod +x /opt/solr/.bashrc
+RUN chown -R solr:solr /var/solr/data/configsets
+
 EXPOSE 8983
-WORKDIR /opt/solr
 
 CMD [ "/usr/bin/supervisord" ]
