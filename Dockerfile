@@ -40,8 +40,7 @@ RUN mkdir -p /var/solr/data/configsets/drupal/conf
 RUN git clone https://git.drupalcode.org/project/search_api_solr.git \
   && cd search_api_solr \
   && git checkout 4.x \
-  && cp jump-start/solr8/config-set/* /var/solr/data/configsets/drupal \
-  && cp solr-conf-templates/8.x/* /var/solr/data/configsets/drupal/conf
+  && cp jump-start/solr8/config-set/* /var/solr/data/configsets/drupal
 COPY solrcore.properties /var/solr/data/configsets/drupal/conf
 RUN echo "export PATH=/usr/local/openjdk-11:$PATH" >> /opt/solr/.bashrc
 RUN chown solr:solr /opt/solr/.bashrc

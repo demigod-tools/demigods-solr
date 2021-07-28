@@ -10,9 +10,10 @@ CONFIG_INSTANCE_DIR=${SOLR_CORE_HOME}/${CONFIG_CORE}
 
 mkdir -p ${SOLR_CORE_HOME}/${PROJECT_NAME}
 mkdir -p ${SOLR_CORE_HOME}/${PROJECT_NAME}/data
+mkdir -p ${SOLR_CORE_HOME}/${PROJECT_NAME}/conf
 chmod -R 777 ${SOLR_CORE_HOME}/${PROJECT_NAME}
 
-cp -R ${SOLR_CORE_HOME}/configsets/drupal/* ${SOLR_CORE_HOME}/${PROJECT_NAME}
+cp -R ${SOLR_CORE_HOME}/configsets/drupal/* ${SOLR_CORE_HOME}/${PROJECT_NAME}/conf
 
 cd /opt/solr
 
