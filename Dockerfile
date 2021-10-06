@@ -39,7 +39,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/solr/data/configsets/drupal/conf
 RUN git clone https://git.drupalcode.org/project/search_api_solr.git \
   && cd search_api_solr \
-  && git checkout 4.x \
+  && git checkout -f 4.x \
   && cp jump-start/solr8/config-set/* /var/solr/data/configsets/drupal/conf
 COPY solrcore.properties /var/solr/data/configsets/drupal/conf
 RUN echo "export PATH=/usr/local/openjdk-11:$PATH" >> /opt/solr/.bashrc
