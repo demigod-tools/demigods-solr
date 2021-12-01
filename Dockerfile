@@ -2,14 +2,10 @@ FROM solr:8
 
 USER root
 
-## SOLR
-ENV SOLR_HOST solr
-ENV SOLR_PORT 8983
-ENV SOLR_PATH /solr
 
 LABEL org.label-schema.vendor="pantheon" \
   org.label-schema.name=$REPO_NAME \
-  org.label-schema.description="Solr v8.8." \
+  org.label-schema.description="Solr v8.x." \
   org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.version=$VERSION \
   org.label-schema.vcs-ref=$VCS_REF \
@@ -25,20 +21,25 @@ RUN apt-get update && \
         git \
         procps \
         apt-utils \
-        zip
+        zip \
+        jq
 
 RUN git clone https://git.drupalcode.org/project/search_api_solr.git \
   && cd search_api_solr \
   && git checkout -f 4.x
 
-RUN cp /opt/docker-solr/scripts/docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
+RUN curl -O https://versaweb.dl.sourceforge.net/project/lemur/lemur/RankLib-2.16/RankLib-2.16.jar \
+    && ln -s RankLib-2.16.jar ranklib.jar
+
+RUN cp /opt/docker-solr/scripts/docker-entrypoint.sh / \
+    && chmod +x /docker-entrypoint.sh
+
 EXPOSE 8983
 
 USER solr
 
 WORKDIR /opt/solr
 
-ENTRYPOINT [ '/docker-entrypoint.sh' ]
+ENTRYPOINT [ 'docker-entrypoint.sh' ]
 
-CMD ['solr-fg']
+CMD ['solr-foreground']
