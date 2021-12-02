@@ -34,6 +34,9 @@ RUN curl -O https://versaweb.dl.sourceforge.net/project/lemur/lemur/RankLib-2.16
 RUN cp /opt/docker-solr/scripts/docker-entrypoint.sh / \
     && chmod +x /docker-entrypoint.sh
 
+COPY demigods/healthcheck.sh /
+RUN chmod +x /healthcheck.sh
+
 EXPOSE 8983
 
 USER solr
