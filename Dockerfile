@@ -1,8 +1,5 @@
 FROM solr:8
-
 USER root
-
-
 LABEL org.label-schema.vendor="pantheon" \
   org.label-schema.name=$REPO_NAME \
   org.label-schema.description="Solr v8.x." \
@@ -16,23 +13,20 @@ LABEL org.label-schema.vendor="pantheon" \
 
 WORKDIR /opt
 
-RUN apt-get update && \
-  apt-get install -y --fix-missing curl \
+RUN apt-get update \
+  && apt-get install -y --fix-missing curl \
         git \
         procps \
         apt-utils \
         zip \
-        jq
-
-RUN git clone https://git.drupalcode.org/project/search_api_solr.git \
+        jq \
+  && git clone https://git.drupalcode.org/project/search_api_solr.git \
   && cd search_api_solr \
-  && git checkout -f 4.x
-
-RUN curl -O https://versaweb.dl.sourceforge.net/project/lemur/lemur/RankLib-2.16/RankLib-2.16.jar \
-    && ln -s RankLib-2.16.jar ranklib.jar
-
-RUN cp /opt/docker-solr/scripts/docker-entrypoint.sh / \
-    && chmod +x /docker-entrypoint.sh
+  && git checkout -f 4.x \
+  && curl -O https://versaweb.dl.sourceforge.net/project/lemur/lemur/RankLib-2.16/RankLib-2.16.jar \
+  && ln -s RankLib-2.16.jar ranklib.jar \
+  && cp /opt/docker-solr/scripts/docker-entrypoint.sh / \
+  && chmod +x /docker-entrypoint.sh
 
 COPY demigods/healthcheck.sh /
 RUN chmod +x /healthcheck.sh
