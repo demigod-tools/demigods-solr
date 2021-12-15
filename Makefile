@@ -18,4 +18,7 @@ build:
 		--tag=${IMAGE_TAG}:latest \
 		 .
 
+push:
+	docker push ${IMAGE_TAG}:latest
+
 .DEFAULT_GOAL := build
